@@ -42,27 +42,25 @@
     const SUPABASE_URL = 'https://lyvgbwszlsynxxcetlib.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_huXmQPAfpixXFZMOH-ZAQw_im-AZslR';
 
-    const { createClient } = supabase;
-    const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+   const { createClient } = supabase;
+  const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    async function loadMessage() {
-      // Pinalitan ang .single() ng .limit(1) para hindi mag-crash kung maraming rows
-      const { data, error } = await client
-        .from('hello')
-        .select('name')
-        .limit(1);
+  async function loadMessage() {
+    const { data, error } = await client
+      .from('hello')
+      .select('name')
+      .limit(1);
 
-      if (error) {
-        // Ipakita ang eksaktong error sa screen
-        document.getElementById('output').innerText = 'Error: ari kung sala ang URL' + error.message;
-        console.error(error);
-      } else if (!data || data.length === 0) {
-        document.getElementById('output').innerText = 'Walang data sa table!';
-      } else {
-        document.getElementById('output').innerText = data[0].content;
-      }
+    if (error) {
+      document.getElementById('output').innerText = 'Error: ' + error.message;
+    } else if (!data || data.length === 0) {
+      document.getElementById('output').innerText = 'Walang data sa table!';
+    } else {
+      // Dagdagan ng fallback para sa capital 'Name' kung sakali
+      const resultName = data[0].name || data[0].Name;
+      document.getElementById('output').innerText = resultName;
     }
-
+  }
     loadMessage();
   </script>
 
