@@ -33,32 +33,38 @@
 <body>
 
   <div class="card">
-    <h1 id="output">Loading...</h1>
+    <h1 id="output">Loading...na</h1>
   </div>
 
   <script>
-    const SUPABASE_URL = 'https://lyvgbwszlsynxxcetlib.supabase.co/rest/v1/';
+    window.alert("test..loading nagid!"); 
+   
+    const SUPABASE_URL = 'https://lyvgbwszlsynxxcetlib.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_huXmQPAfpixXFZMOH-ZAQw_im-AZslR';
 
     const { createClient } = supabase;
     const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     async function loadMessage() {
+      // Pinalitan ang .single() ng .limit(1) para hindi mag-crash kung maraming rows
       const { data, error } = await client
-        .from('messages')
-        .select('content')
-        .limit(1)
-        .single();
+        .from('hello')
+        .select('name')
+        .limit(1);
 
       if (error) {
-        document.getElementById('output').innerText = 'Error loading data!';
+        // Ipakita ang eksaktong error sa screen
+        document.getElementById('output').innerText = 'Error: ari kung sala ang URL' + error.message;
         console.error(error);
+      } else if (!data || data.length === 0) {
+        document.getElementById('output').innerText = 'Walang data sa table!';
       } else {
-        document.getElementById('output').innerText = data.content;
+        document.getElementById('output').innerText = data[0].content;
       }
     }
 
     loadMessage();
   </script>
+
 </body>
 </html>
