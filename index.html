@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello Supabase App</title>
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f0f2f5;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+    h1 { color: #16a34a; margin: 0; font-size: 1.5rem; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1 id="output">Loading...</h1>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://lyvgbwszlsynxxcetlib.supabase.co/rest/v1/';
+    const SUPABASE_ANON_KEY = 'sb_publishable_huXmQPAfpixXFZMOH-ZAQw_im-AZslR';
+
+    const { createClient } = supabase;
+    const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function loadMessage() {
+      const { data, error } = await client
+        .from('messages')
+        .select('content')
+        .limit(1)
+        .single();
+
+      if (error) {
+        document.getElementById('output').innerText = 'Error loading data!';
+        console.error(error);
+      } else {
+        document.getElementById('output').innerText = data.content;
+      }
+    }
+
+    loadMessage();
+  </script>
+</body>
+</html>
