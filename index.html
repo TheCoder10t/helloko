@@ -33,7 +33,7 @@
 <body>
 
   <div class="card">
-    <h1 id="output">Loading...na</h1>
+    <h1 id="output">Loading...na!</h1>
   </div>
 
   <script>
@@ -45,25 +45,38 @@
    const { createClient } = supabase;
   const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  async function loadAllMessages() {
-      // 1. Tinanggal ang .limit(1) para kuhanin LAHAT ng records
-      const { data, error } = await client
-        .from('hello')
-        .select('name');
+  const { createClient } = supabase;
+    const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    async function loadAllMessages() {
       const listContainer = document.getElementById('output-list');
 
-      if (error) {
-        listContainer.innerHTML = `<li>Error: ${error.message}</li>`;
-      } else if (!data || data.length === 0) {
-        listContainer.innerHTML = '<li>Walang data sa table!</li>';
-      } else {
-        // 2. I-loop ang bawat row sa data at gawing <li>
-        const itemsHtml = data
-          .map(item => `<li>${item.name || item.Name}</li>`)
-          .join('');
+      try {
+        const { data, error } = await client
+          .from('hello')
+          .select('name');
 
-        listContainer.innerHTML = itemsHtml;
+        if (error) {
+          listContainer.innerHTML = `<li>Error: ${error.message}</li>`;
+          return;
+        }
+
+        if (!data || data.length === 0) {
+          listContainer.innerHTML = '<li>Walang data sa table!</li>';
+          return;
+        }
+
+        let html = '';
+        for (let i = 0; i < data.length; i++) {
+          const val = data[i].name || data[i].Name || 'No Value';
+          html += `<li>${val}</li>`;
+        }
+        
+        listContainer.innerHTML = html;
+
+      } catch (err) {
+        listContainer.innerHTML = `<li>JS Error: ${err.message}</li>`;
+        console.error(err);
       }
     }
     loadMessage();
