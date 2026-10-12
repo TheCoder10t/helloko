@@ -37,7 +37,7 @@
   </div>
 
   <script>
-    window.alert("test..loading nagid!"); 
+    window.alert("test..loading nagid! ya"); 
    
     const SUPABASE_URL = 'https://lyvgbwszlsynxxcetlib.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_huXmQPAfpixXFZMOH-ZAQw_im-AZslR';
@@ -45,22 +45,27 @@
    const { createClient } = supabase;
   const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  async function loadMessage() {
-    const { data, error } = await client
-      .from('hello')
-      .select('name')
-      .limit(1);
+  async function loadAllMessages() {
+      // 1. Tinanggal ang .limit(1) para kuhanin LAHAT ng records
+      const { data, error } = await client
+        .from('hello')
+        .select('name');
 
-    if (error) {
-      document.getElementById('output').innerText = 'Error: ' + error.message;
-    } else if (!data || data.length === 0) {
-      document.getElementById('output').innerText = 'Walang data sa table!';
-    } else {
-      // Dagdagan ng fallback para sa capital 'Name' kung sakali
-      const resultName = data[0].name || data[0].Name;
-      document.getElementById('output').innerText = resultName;
+      const listContainer = document.getElementById('output-list');
+
+      if (error) {
+        listContainer.innerHTML = `<li>Error: ${error.message}</li>`;
+      } else if (!data || data.length === 0) {
+        listContainer.innerHTML = '<li>Walang data sa table!</li>';
+      } else {
+        // 2. I-loop ang bawat row sa data at gawing <li>
+        const itemsHtml = data
+          .map(item => `<li>${item.name || item.Name}</li>`)
+          .join('');
+
+        listContainer.innerHTML = itemsHtml;
+      }
     }
-  }
     loadMessage();
   </script>
 
